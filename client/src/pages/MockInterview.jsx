@@ -14,7 +14,7 @@ export default function MockInterview() {
     if (!type) return alert('Choose HR or Technical');
     setLoading(true);
     try {
-      const res = await api.post('/mock/start', { type });
+      const res = await api.post('/api/mock/start', { type });
       setInterview(res.data);
       setResponses(new Array(res.data.questions.length).fill(''));
       setStage('running');
@@ -29,7 +29,7 @@ export default function MockInterview() {
   async function submitMock() {
     setLoading(true);
     try {
-      await api.post('/mock/submit', { interviewId: interview._id, responses });
+      await api.post('/api/mock/submit', { interviewId: interview._id, responses });
       alert('Mock submitted successfully!');
       setStage('result');
       loadHistory();
@@ -43,7 +43,7 @@ export default function MockInterview() {
 
   async function loadHistory() {
     try {
-      const res = await api.get('/mock');
+      const res = await api.get('/api/mock');
       setMocks(res.data);
     } catch (err) {
       console.error('loadHistory', err);

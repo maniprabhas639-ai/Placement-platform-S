@@ -21,7 +21,7 @@ export default function AdminSubmissions() {
         const q = new URLSearchParams();
         if (filter.status) q.set('status', filter.status);
         if (filter.category) q.set('category', filter.category);
-        const res = await api.get(`/admin/submissions?${q.toString()}`);
+        const res = await api.get(`/api/admin/submissions?${q.toString()}`);
         if (!mounted) return;
         setSubmissions(res.data || []);
       } catch (err) {
@@ -60,7 +60,7 @@ export default function AdminSubmissions() {
         wrongAnswers: Number(editValues.wrongAnswers),
         adminNotes: editValues.adminNotes
       };
-      const res = await api.put(`/admin/submissions/${id}`, payload);
+      const res = await api.put(`/api/admin/submissions/${id}`, payload);
       // update local state
       setSubmissions(prev => prev.map(p => p._id === id ? res.data : p));
       setMsg('Saved');

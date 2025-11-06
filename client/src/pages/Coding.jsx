@@ -19,9 +19,9 @@ export default function Coding() {
     async function load() {
       setLoading(true);
       try {
-        const res = await api.get(
-          "/practice/questions?category=Coding&difficulty=Medium&limit=1"
-        );
+      const res = await api.get(
+  "/api/practice/questions?category=Coding&difficulty=Medium&limit=1"
+);
 
         if (!mounted) return;
 
@@ -80,7 +80,7 @@ export default function Coding() {
         status: "manual_review",
       };
 
-      await api.post("/practice/submit", payload);
+      await api.post("/api/practice/submit", payload);
 
       localStorage.removeItem(`coding-draft-${question._id}`);
       navigate("/results");

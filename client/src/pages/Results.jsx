@@ -31,7 +31,8 @@ export default function Results() {
     async function load() {
       setLoading(true);
       try {
-        const res = await api.get('/practice/results');
+        const res = await api.get('/api/practice/results');
+
         if (!mounted) return;
         const arr = Array.isArray(res.data) ? res.data : [];
         arr.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));

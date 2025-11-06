@@ -193,7 +193,8 @@ export default function Report() {
     async function load() {
       setLoading(true);
       try {
-        const res = await api.get('/report');
+        const res = await api.get('/api/report');
+
         if (!mounted) return;
         setData(res.data);
       } catch (e) {

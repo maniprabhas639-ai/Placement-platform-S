@@ -13,7 +13,7 @@ export default function AdminMockReviews() {
   async function loadList() {
     setLoading(true);
     try {
-      const res = await api.get('/admin/mocks?limit=100');
+      const res = await api.get('/api/admin/mocks?limit=100');
       setMocks(res.data || []);
     } catch (err) {
       console.error('load mocks', err);
@@ -27,7 +27,7 @@ export default function AdminMockReviews() {
 
   async function openMock(id) {
     try {
-      const res = await api.get(`/admin/mocks/${id}`);
+      const res = await api.get(`/api/admin/mocks/${id}`);
       setSelected(res.data);
       setEdit({ score: res.data.score ?? '', feedback: res.data.feedback ?? '' });
     } catch (err) {
@@ -43,7 +43,7 @@ export default function AdminMockReviews() {
       feedback: edit.feedback
     };
     try {
-      const res = await api.put(`/admin/mocks/${selected._id}`, payload);
+      const res = await api.put(`/api/admin/mocks/${selected._id}`, payload);
       setSelected(res.data);
       setMsg('Saved');
       // update list locally

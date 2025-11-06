@@ -1,3 +1,4 @@
+// client/src/context/AuthContext.jsx
 import React, { createContext, useEffect, useState, useCallback } from 'react';
 import api from '../api/axiosInstance';
 
@@ -21,7 +22,7 @@ export function AuthProvider({ children }) {
       return;
     }
     try {
-      const res = await api.get('/auth/me');
+      const res = await api.get('/api/auth/me');
       setUser(res.data);
     } catch (err) {
       console.warn('fetchMe failed, clearing token');
@@ -37,7 +38,7 @@ export function AuthProvider({ children }) {
   }, [fetchMe]);
 
   const login = async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
+    const res = await api.post('/api/auth/login', { email, password });
     const { token, user } = res.data;
     localStorage.setItem('token', token);
     setUser(user);
@@ -45,7 +46,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (name, email, password) => {
-    const res = await api.post('/auth/register', { name, email, password });
+    const res = await api.post('/api/auth/register', { name, email, password });
     const { token, user } = res.data;
     localStorage.setItem('token', token);
     setUser(user);

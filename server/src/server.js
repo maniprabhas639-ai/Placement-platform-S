@@ -30,29 +30,41 @@ app.use(express.urlencoded({ extended: true }));
  *  - allows localhost dev origins
  *  - allows the production origin if supplied via CLIENT_URL
  */
+// CORS: allow explicit CLIENT_URL, localhost, and any vercel.app subdomain
 const allowedOrigins = [
-  process.env.CLIENT_URL,       // production Vercel origin (set in Render)
-  'http://localhost:5173',      // Vite dev default
-  'http://127.0.0.1:5173',      // sometimes used
-  'http://localhost:3000',      // optional if you ever run CRA locally
+  process.env.CLIENT_URL,       // exact production origin if set
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000'
 ].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (e.g., curl, Postman, mobile apps)
+    // allow requests with no origin (curl, Postman, server-to-server)
     if (!origin) return callback(null, true);
+
+    // allow explicit list
     if (allowedOrigins.indexOf(origin) !== -1) {
       return callback(null, true);
     }
-    // otherwise block
+
+    // allow any vercel.app subdomain (returns the specific origin so browser accepts it)
+    try {
+      const url = new URL(origin);
+      if (url.hostname && url.hostname.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch (e) {
+      // fallthrough to rejection
+    }
+
     return callback(new Error('CORS policy: origin not allowed'), false);
   },
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// respond to preflight requests for all routes
 app.options('*', cors());
+
 
 // Connect DB
 connectDB(process.env.MONGO_URI);

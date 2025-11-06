@@ -1,3 +1,4 @@
+// server/src/server.js
 require('dotenv').config();
 const interviewRoutes = require('./routes/interview.routes');
 const express = require('express');
@@ -11,8 +12,6 @@ const reportRoutes = require('./routes/report.routes');
 const mockInterviewRoutes = require('./routes/mockInterview.routes');
 const adminMockRoutes = require('./routes/admin.mock.routes');
 
-
-
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -21,8 +20,39 @@ const app = express();
 app.use(express.json({ limit: '10kb' })); // small limit for auth payloads
 app.use(express.urlencoded({ extended: true }));
 
-const clientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
-app.use(cors({ origin: clientOrigin, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
+/**
+ * CORS: allow multiple origins (production Vercel + local dev).
+ * The CLIENT_URL env var (set on Render) should be your Vercel origin,
+ * for example: "https://placement-platform-xxxx.vercel.app"
+ *
+ * This function:
+ *  - allows requests without origin (curl / server-to-server)
+ *  - allows localhost dev origins
+ *  - allows the production origin if supplied via CLIENT_URL
+ */
+const allowedOrigins = [
+  process.env.CLIENT_URL,       // production Vercel origin (set in Render)
+  'http://localhost:5173',      // Vite dev default
+  'http://127.0.0.1:5173',      // sometimes used
+  'http://localhost:3000',      // optional if you ever run CRA locally
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (e.g., curl, Postman, mobile apps)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    // otherwise block
+    return callback(new Error('CORS policy: origin not allowed'), false);
+  },
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// respond to preflight requests for all routes
+app.options('*', cors());
 
 // Connect DB
 connectDB(process.env.MONGO_URI);
@@ -37,17 +67,20 @@ app.use('/api/report', reportRoutes);
 app.use('/api/mock', mockInterviewRoutes);
 app.use('/api/admin/mocks', adminMockRoutes);
 
-
-
 // Health check
 app.get('/health', (req, res) => res.json({ ok: true }));
 
 // generic error handler
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
+  // If this is a CORS rejection we can return 403 to make debugging clearer
+  if (err && err.message && err.message.includes('CORS policy')) {
+    return res.status(403).json({ message: 'CORS origin not allowed' });
+  }
   res.status(500).json({ message: 'Internal server error' });
 });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+

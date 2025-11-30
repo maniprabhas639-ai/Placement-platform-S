@@ -177,7 +177,8 @@ export default function Dashboard() {
         if (dateRangeFilter) params.set("dateRange", dateRangeFilter);
         if (packageFilter) params.set("package", packageFilter);
 
-        const res = await api.get(`/interviews?${params.toString()}`);
+        const res = await api.get(`/api/interviews?${params.toString()}`);
+
         if (!mounted) return;
         setInterviews(res.data.interviews || []);
         setMeta(res.data.meta || { total: 0, page: 1, pages: 1, limit });

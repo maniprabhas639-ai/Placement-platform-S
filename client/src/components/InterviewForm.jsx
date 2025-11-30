@@ -51,7 +51,8 @@ export default function InterviewForm({ onCreate = () => {}, onClose = () => {} 
     setLoading(true);
     try {
       // POST to server
-      const res = await api.post('/interviews', payload);
+      const res = await api.post('/api/interviews', payload);
+
       // server returns created interview
       const created = res.data;
       onCreate(created); // optimistic UI handled by parent

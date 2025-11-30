@@ -32,6 +32,7 @@ exports.uploadResume = async (req, res) => {
 
 exports.listResumes = async (req, res) => {
   try {
+    console.log('listResumes req.user:', req.user && req.user._id); // << add this line
     const docs = await Resume.find({ user: req.user._id }).sort({ createdAt: -1 }).lean();
     res.json(docs);
   } catch (err) {
@@ -39,6 +40,7 @@ exports.listResumes = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 exports.deleteResume = async (req, res) => {
   try {

@@ -35,7 +35,8 @@ export default function InterviewDetails() {
     async function load() {
       setLoading(true);
       try {
-        const res = await api.get(`/interviews/${id}`);
+        const res = await api.get(`/api/interviews/${id}`);
+
         if (!mounted) return;
         const data = res.data;
         setInterview(data);
@@ -87,7 +88,8 @@ export default function InterviewDetails() {
   async function handleDelete() {
     if (!confirm("Delete this interview? This action cannot be undone.")) return;
     try {
-      await api.delete(`/interviews/${id}`);
+      await api.delete(`/api/interviews/${id}`);
+
       navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error("delete failed", err);
@@ -121,7 +123,8 @@ export default function InterviewDetails() {
             : form.topics,
         notes: form.notes,
       };
-      const res = await api.put(`/interviews/${id}`, payload);
+      const res = await api.put(`/api/interviews/${id}`, payload);
+
       setInterview(res.data);
       setEditing(false);
     } catch (err) {

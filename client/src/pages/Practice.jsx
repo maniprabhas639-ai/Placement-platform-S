@@ -72,10 +72,11 @@ export default function Practice() {
       setError("");
       try {
         const res = await api.get(
-          `/practice/questions?category=${encodeURIComponent(paramCategory)}&difficulty=${encodeURIComponent(
-            paramDifficulty
-          )}&limit=${paramLimit}`
-        );
+  `/api/practice/questions?category=${encodeURIComponent(paramCategory)}&difficulty=${encodeURIComponent(
+    paramDifficulty
+  )}&limit=${paramLimit}`
+);
+
         if (!mounted) return;
         const qs = (res.data || []).map((q) => ({ ...q, _id: String(q._id) }));
         setQuestions(qs);
@@ -308,7 +309,8 @@ export default function Practice() {
 
     setSubmitting(true);
     try {
-      const res = await api.post("/practice/submit", payload);
+     const res = await api.post("/api/practice/submit", payload);
+
       setResult(res.data.result || null);
       setServerCorrectMap(res.data.correctAnswers || {});
       // After successful submit, navigate to results page (keeps results component working)

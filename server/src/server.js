@@ -96,6 +96,13 @@ app.use('/api/admin/mocks', adminMockRoutes);
 /* -------------------- HEALTH CHECK -------------------- */
 app.get('/health', (req, res) => res.json({ ok: true }));
 
+/* -------------------- ROOT INFO -------------------- */
+app.get('/', (req, res) => {
+  res.send('Placement Platform API is running ✅');
+});
+
+
+
 /* -------------------- ERROR HANDLER -------------------- */
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err && err.stack ? err.stack : err);

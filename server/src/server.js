@@ -25,12 +25,13 @@ const PORT = Number(process.env.PORT) || DEFAULT_PORT;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
-
+app.set("trust proxy", 1);
 /* -------------------- SECURITY & PERFORMANCE -------------------- */
 app.use(helmet());
 app.use(compression());
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true }));
+
 
 if (NODE_ENV === 'development') {
   app.use(morgan('dev'));

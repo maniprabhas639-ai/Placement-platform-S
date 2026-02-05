@@ -309,7 +309,7 @@ export default function Practice() {
 
     setSubmitting(true);
     try {
-     const res = await api.post("/practice/submit", payload);
+     const res = await api.post("api/practice/submit", payload);
 
       setResult(res.data.result || null);
       setServerCorrectMap(res.data.correctAnswers || {});
